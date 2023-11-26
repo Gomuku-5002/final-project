@@ -226,11 +226,27 @@ class MCTS_path:
                 N_value = i.times
         return self.value/self.times + 2 * np.sqrt(np.log(N_value)/self.times)
 
+def avoid_win(board,color):
+    
+    legal_move = np.argwhere(board == 0)
+    for i in legal_move:
+        temp_board = board.copy()
+        temp_board[i[0], i[1]] = color
+        check_result = check_winner(temp_board)
+        if check_result !=0:
+            return i
+    return None
+
+
 def ai_move(board, color):
      # Input: board = current configuration of the 11x11 matrix
      #        color = the stone color of the AI
      # Output: [row, col] = a 1x2 array to indicate where the AI should place its next stone 
-     return [0,0] 
+     check = avoid_win(board,-color)
+     
+     if check !=None:
+         return check
+     else:
  
     
 #%%
