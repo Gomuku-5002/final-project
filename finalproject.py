@@ -216,16 +216,31 @@ class MCTS_path:
         self.value = 0
         self.times = 0
         self.layer = 0
+        self.ucb = 0
+        self.row = 0
+        self.column = 0
         # Parents is a list of (row, column)
         self.parents = []
+        
+    def __init__(self,layer, row, column):
+       self.value = 0
+       self.times = 0
+       self.layer = layer
+       self.row = row
+       self.column = column
+       # Parents is a list of (row, column)
+       self.parents = []        
 
     def ucb(self):
         first_parent = self.parents[-1]
         for i in db_chessboard[first_parent]:
             if i.layer == self.layer - 1:
                 N_value = i.times
-        return self.value/self.times + 2 * np.sqrt(np.log(N_value)/self.times)
-
+        if self.times == 0:
+            return np.inf
+        else:
+            return self.value/self.times + 2 * np.sqrt(np.log(N_value)/self.times)
+        
 def avoid_win(board,color):
     
     legal_move = np.argwhere(board == 0)
@@ -237,6 +252,25 @@ def avoid_win(board,color):
             return i
     return None
 
+def get_MCTS_chessboard(db_chessboard, layer):
+    mcts_list = []
+    ucb_list = []
+    for i in range[0, bline]:
+        for j in range[0, bline]:
+            for k in db_chessboard.iloc[i, j]:
+                if k.layer == layer:
+                    mcts_list.append(k)
+                    ucb_list.append(k.ucb())
+    return mcts_list, ucb_list
+
+
+def selection(board):
+    legal_move = np.argwhere(board == 0)
+    for i in legal_move:
+        db_chessboard.iloc[i[0], i[1]] =  [MCTS_path(layer = 1, row = i[0], column = i[1])]
+    layer1_list, layer1_ucb = get_MCTS_chessboard(db_chessboard, 1)
+    ucb_ind_max = layer1_ucb.index(max(layer1_ucb))
+    return
 
 def ai_move(board, color):
      # Input: board = current configuration of the 11x11 matrix
@@ -247,7 +281,6 @@ def ai_move(board, color):
      if check !=None:
          return check
      else:
- 
     
 #%%
 
