@@ -205,6 +205,22 @@ def check_winner(board):
      return winner
 
 #%%
+db_chessboard = np.zeros((11,11))
+
+class MCTS_path:
+    def __init__(self):
+        self.value = 0
+        self.times = 0
+        self.layer = 0
+        # Parents is a list of (row, column)
+        self.parents = []
+
+    def ucb(self):
+        first_parent = self.parents[-1]
+        for i in db_chessboard[first_parent]:
+            if i.layer == self.layer - 1:
+                N_value = i.times
+        return self.value/self.times + 2 * np.sqrt(np.log(N_value)/self.times)
 
 def ai_move(board, color):
      # Input: board = current configuration of the 11x11 matrix
