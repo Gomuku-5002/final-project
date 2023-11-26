@@ -178,6 +178,9 @@ def roll_board(board):
 def check_winner(board):
      # Input: board = current configuration of the 11x11 matrix
      # Output: 1 or -1 to indicate which color wins; 2 if it is a draw; 0 if the game is not yet over
+
+     if sum(sum(board==0))>0:
+          return 2
      ext_board = np.zeros((xbline,xbline), dtype=int)
      ext_board[4:4+bline,4:4+bline]=board
      ext_board[0:4,:] = ext_board[bline:4+bline,:]
