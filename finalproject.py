@@ -205,7 +205,11 @@ def check_winner(board):
      return winner
 
 #%%
-db_chessboard = np.zeros((11,11))
+import pandas as pd
+
+db_chessboard = pd.DataFrame(np.arange(bline**2).reshape((bline, bline)))
+
+
 
 class MCTS_path:
     def __init__(self):
