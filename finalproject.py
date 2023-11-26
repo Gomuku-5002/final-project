@@ -229,7 +229,7 @@ class MCTS_path:
        self.row = row
        self.column = column
        # Parents is a list of (row, column)
-       self.parents = []        
+       self.parents = []       
 
     def ucb(self):
         first_parent = self.parents[-1]
@@ -237,9 +237,9 @@ class MCTS_path:
             if i.layer == self.layer - 1:
                 N_value = i.times
         if self.times == 0:
-            return np.inf
+            return (-1)**(self.layer+1)*np.inf
         else:
-            return self.value/self.times + 2 * np.sqrt(np.log(N_value)/self.times)
+            return self.value/self.times + (-1)**(self.layer+1)* 2 * np.sqrt(np.log(N_value)/self.times)
         
 def avoid_win(board,color):
     
@@ -252,7 +252,7 @@ def avoid_win(board,color):
             return i
     return None
 
-def get_MCTS_chessboard(db_chessboard, layer):
+def get_MCTS_chessboard(db_chessboard, layer, parent_list):
     mcts_list = []
     ucb_list = []
     for i in range[0, bline]:
@@ -264,13 +264,32 @@ def get_MCTS_chessboard(db_chessboard, layer):
     return mcts_list, ucb_list
 
 
-def selection(board):
-    legal_move = np.argwhere(board == 0)
-    for i in legal_move:
-        db_chessboard.iloc[i[0], i[1]] =  [MCTS_path(layer = 1, row = i[0], column = i[1])]
-    layer1_list, layer1_ucb = get_MCTS_chessboard(db_chessboard, 1)
-    ucb_ind_max = layer1_ucb.index(max(layer1_ucb))
-    return
+def selection(board, color):
+    temp_board = board.copy()
+    stop = Ture
+    layer = 0
+    parent_list = []
+    while stop == Ture:
+        layer += 1
+
+        legal_move = np.argwhere(temp_board == 0)
+        for i in legal_move:
+            db_chessboard.iloc[i[0], i[1]] =  [MCTS_path(layer = layer, row = i[0], column = i[1])]
+        layer1_list, layer1_ucb = get_MCTS_chessboard(db_chessboard, layer, parent_list)
+       
+        if layer % 2 ==1:
+            colors = color
+            ucb_ind = layer1_ucb.index(max(layer1_ucb))
+        else:
+            colors = -color
+            ucb_ind = layer1_ucb.index(min(layer1_ucb))
+            
+        if  layer1_list(ucb_ind).ucb == np.inf:
+            return layer1_list(ucb_ind)
+        else:
+            temp_board[layer1_list(ucb_ind).row, layer1_list(ucb_ind).column] = colors
+            parent = 
+
 
 def ai_move(board, color):
      # Input: board = current configuration of the 11x11 matrix
