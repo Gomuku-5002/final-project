@@ -271,40 +271,48 @@ def evaluation(is_ai, board):
     # List1 is black stone; list2 is white.
     list1 = (np.argwhere(board==1)+4).tolist()
     list2 = (np.argwhere(board==-1)+4).tolist()
+    list3 = (np.argwhere(ext_board==1)).tolist()
+    list4 = (np.argwhere(ext_board==-1)).tolist()
+    
     total_score = 0
 
     if is_ai:
         my_list = list1
         enemy_list = list2
+        my_list_ext = list3
+        enemy_list_ext = list4
     else:
         my_list = list2
         enemy_list = list1
+        my_list_ext = list4
+        enemy_list_ext = list3
+
 
     score_all_arr = []  
     my_score = 0
     for pt in my_list:
         m = pt[0]
         n = pt[1]
-        my_score += cal_score(m, n, 0, 1, enemy_list, my_list, score_all_arr)
-        my_score += cal_score(m, n, 1, 0, enemy_list, my_list, score_all_arr)
-        my_score += cal_score(m, n, 1, 1, enemy_list, my_list, score_all_arr)
-        my_score += cal_score(m, n, -1, 1, enemy_list, my_list, score_all_arr)
+        my_score += cal_score(m, n, 0, 1, enemy_list_ext, my_list_ext, score_all_arr)
+        my_score += cal_score(m, n, 1, 0, enemy_list_ext, my_list_ext, score_all_arr)
+        my_score += cal_score(m, n, 1, 1, enemy_list_ext, my_list_ext, score_all_arr)
+        my_score += cal_score(m, n, -1, 1, enemy_list_ext, my_list_ext, score_all_arr)
 
     score_all_arr_enemy = []
     enemy_score = 0
     for pt in enemy_list:
         m = pt[0]
         n = pt[1]
-        enemy_score += cal_score(m, n, 0, 1, my_list, enemy_list, score_all_arr_enemy)
-        enemy_score += cal_score(m, n, 1, 0, my_list, enemy_list, score_all_arr_enemy)
-        enemy_score += cal_score(m, n, 1, 1, my_list, enemy_list, score_all_arr_enemy)
-        enemy_score += cal_score(m, n, -1, 1, my_list, enemy_list, score_all_arr_enemy)
+        enemy_score += cal_score(m, n, 0, 1, my_list_ext, enemy_list_ext, score_all_arr_enemy)
+        enemy_score += cal_score(m, n, 1, 0, my_list_ext, enemy_list_ext, score_all_arr_enemy)
+        enemy_score += cal_score(m, n, 1, 1, my_list_ext, enemy_list_ext, score_all_arr_enemy)
+        enemy_score += cal_score(m, n, -1, 1, my_list_ext, enemy_list_ext, score_all_arr_enemy)
 
     total_score = my_score - enemy_score*ratio*0.1
     
     return total_score
 
-def cal_score(m, n, x_decrict, y_derice, enemy_list, my_list, score_all_arr):
+def cal_score(m, n, x_decrict, y_derice, enemy_list_ext, my_list_ext, score_all_arr):
     add_score = 0
     max_score_shape = (0, None)
 
@@ -316,9 +324,9 @@ def cal_score(m, n, x_decrict, y_derice, enemy_list, my_list, score_all_arr):
     for offset in range(-5, 1):
         pos = []
         for i in range(0, 6):
-            if [m + (i + offset) * x_decrict, n + (i + offset) * y_derice] in enemy_list:
+            if [m + (i + offset) * x_decrict, n + (i + offset) * y_derice] in enemy_list_ext:
                 pos.append(2)
-            elif [m + (i + offset) * x_decrict, n + (i + offset) * y_derice] in my_list:
+            elif [m + (i + offset) * x_decrict, n + (i + offset) * y_derice] in my_list_ext:
                 pos.append(1)
             else:
                 pos.append(0)
